@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 */
 Route::post('login', 'API\UserController@login');
 Route::post('register', 'API\UserController@register');
+Route::resource('tasks', 'API\TasksController@create');
 
 Route::group(['middleware' => 'auth:api'], function(){
     Route::post('details', 'API\UserController@details');
