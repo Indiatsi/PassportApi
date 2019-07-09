@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Task;
 use Illuminate\Http\Request;
 
-class TasksController extends Controller
+class TaskController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,7 +15,7 @@ class TasksController extends Controller
     public function index()
     {
         $tasks = Task::all();
-        return view('tasks.index', compact('tasks'));
+        return response()->json($tasks);
     }
 
     /**
@@ -25,7 +25,7 @@ class TasksController extends Controller
      */
     public function create()
     {
-        return view('tasks.create');
+        //
     }
 
     /**
@@ -36,8 +36,19 @@ class TasksController extends Controller
      */
     public function store(Request $request)
     {
-        Task::create($request->all());
-        return redirect()->route('tasks.index');
+        $request->validate([
+            'task_type' => 'required',
+            'name' => 'required',
+            'description' => 'required',
+            'task_date' => 'required',
+            'task_time' => 'required'
+        ]);
+        $task = Task::create($request->all());
+
+        return response()->json([
+            'message' => 'Great success! New task created',
+            'task' => $task
+        ]);
     }
 
     /**
@@ -46,9 +57,9 @@ class TasksController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($task)
     {
-        //
+        return $task;
     }
 
     /**
@@ -69,9 +80,18 @@ class TasksController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $task)
     {
-        //
+        $request->validate([
+            'title'       => 'nullable',
+            'description' => 'nullable'
+        ]);
+        $task->update($request->all());
+
+        return response()->json([
+            'message' => 'Great success! Task updated',
+            'task' => $task
+        ]);
     }
 
     /**
@@ -80,8 +100,12 @@ class TasksController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($task)
     {
-        //
+        $task->delete();
+
+        return response()->json([
+            'message' => 'Successfully deleted task!'
+        ]);
     }
 }
