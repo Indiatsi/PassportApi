@@ -19,3 +19,9 @@ Auth::routes();
 
 Route::resource('tasks', 'TaskController');
 Route::get('/home', 'HomeController@index')->name('home');
+Route::post('/login', 'UserController@login');
+Route::post('/register', 'UserController@register');
+
+Route::group(['middleware' => 'auth:api'], function(){
+    Route::post('details', 'UserController@details');
+});
